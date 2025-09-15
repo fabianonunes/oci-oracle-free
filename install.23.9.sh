@@ -46,24 +46,6 @@ echo "BUILDER: Installing OS dependencies"
 microdnf -y install bc binutils file compat-openssl10 elfutils-libelf ksh \
                     sysstat procps-ng smartmontools make hostname passwd
 
-
-# Install 7zip
-mkdir /tmp/7z
-cd /tmp/7z
-
-if [ "${ARCH}" == "arm64" ]; then
-  download_location="https://7zip.org/a/7z2409-linux-arm64.tar.xz"
-else
-  download_location="https://7zip.org/a/7z2409-linux-x64.tar.xz"
-fi;
-
-curl -s -L -k -O "${download_location}"
-tar xf 7z*xz
-mv 7zzs /usr/bin/
-mv License.txt /usr/share/
-cd - 1> /dev/null
-rm -rf /tmp/7z
-
 echo "BUILDER: Setup oracle user for sudo privileges"
 
 # Setup oracle for sudoers
@@ -1373,12 +1355,12 @@ su -p oracle -c "lsnrctl stop"
 echo "BUILDER: compressing database data files"
 
 cd "${ORACLE_BASE}"/oradata
-7zzs a "${ORACLE_SID}".7z "${ORACLE_SID}"
-chown oracle:oinstall "${ORACLE_SID}".7z
-mv "${ORACLE_SID}".7z "${ORACLE_BASE}"/
+tar --create "${ORACLE_SID}" --use-compress-program zstd --file "${ORACLE_SID}".tar.zst
+chown oracle:oinstall "${ORACLE_SID}".tar.zst
+mv "${ORACLE_SID}".tar.zst "${ORACLE_BASE}"/
 # Delete database files but not directory structure,
 # that way external mount can mount just a sub directory
-find "${ORACLE_SID}" -type f -exec rm "{}" \;
+find "${ORACLE_SID}" -type f -delete
 cd - 1> /dev/null
 
 ###############################
