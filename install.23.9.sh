@@ -40,12 +40,6 @@ else
   REDO_SIZE=20
 fi;
 
-echo "BUILDER: Installing OS dependencies"
-
-# Install installation dependencies
-microdnf -y install bc binutils file compat-openssl10 elfutils-libelf ksh \
-                    sysstat procps-ng smartmontools make hostname passwd
-
 echo "BUILDER: Setup oracle user for sudo privileges"
 
 # Setup oracle for sudoers

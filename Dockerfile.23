@@ -58,6 +58,22 @@ RUN <<EOT
     sudo \
     zstd \
   ;
+
+  # build dependencies
+  microdnf -y install \
+    bc \
+    binutils \
+    compat-openssl10 \
+    elfutils-libelf \
+    file \
+    hostname \
+    ksh \
+    make \
+    passwd \
+    procps-ng \
+    smartmontools \
+    sysstat \
+  ;
 EOT
 
 RUN rpm -iv --nodeps /install/oracle-database-free-23*.rpm
