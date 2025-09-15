@@ -77,9 +77,6 @@ chmod u-w /etc/sudoers
 
 echo "BUILDER: installing database binaries"
 
-# Install Oracle Free
-rpm -iv --nodeps /install/oracle-database-free-23*.rpm
-
 # Set 'oracle' user home directory to ${ORACE_BASE}
 usermod -d "${ORACLE_BASE}" oracle
 
