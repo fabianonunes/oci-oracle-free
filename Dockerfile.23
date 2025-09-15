@@ -35,6 +35,31 @@ ENV OCI_IMAGE_VERSION=${BUILD_VERSION} \
 COPY oracle-database-free-23${DB_FLAVOR}-${BUILD_VERSION}-1.0-1.el8.${RPM_ARCH}.rpm install.${BUILD_VERSION}.sh container-entrypoint.sh resetPassword createAppUser createDatabase healthcheck.sh /install/
 
 RUN /install/install.${BUILD_VERSION}.sh "${BUILD_MODE}"
+RUN <<EOT
+  # database dependencies
+  microdnf -y install \
+    compat-libgfortran-48 \
+    glibc \
+    glibc-devel \
+    libaio \
+    libgcc \
+    libnsl \
+    libstdc++ \
+    xz \
+  ;
+
+  # runtime dependencies
+  microdnf -y install \
+    zip \
+    unzip \
+    gzip \
+    less \
+    findutils \
+    vim-minimal \
+    sudo \
+    zstd \
+  ;
+EOT
 
 ##########################################################################################
 ### Layer 1 --> Core OS

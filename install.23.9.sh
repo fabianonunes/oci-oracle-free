@@ -46,23 +46,6 @@ echo "BUILDER: Installing OS dependencies"
 microdnf -y install bc binutils file compat-openssl10 elfutils-libelf ksh \
                     sysstat procps-ng smartmontools make hostname passwd
 
-# Install runtime dependencies
-microdnf -y install libnsl glibc glibc-devel libaio libgcc libstdc++ xz
-
-# Install Fortran runtime for libora_netlib.so (so that the Intel Math Kernel libraries are no longer needed, Intel only)
-if [[ "${ARCH}" == "amd64"  && ( "${BUILD_MODE}" == "REGULAR" || "${BUILD_MODE}" == "SLIM") ]]; then
-  microdnf -y install compat-libgfortran-48
-fi;
-
-# ARM related packages
-if [ "${ARCH}" == "arm64" ]; then
-  microdnf -y install libgfortran
-fi;
-
-# Install container runtime specific packages
-# (used by the entrypoint script, etc., not the database itself)
-# TODO: replace with 7zip
-microdnf -y install zip unzip gzip less findutils vim-minimal sudo
 
 # Install 7zip
 mkdir /tmp/7z
