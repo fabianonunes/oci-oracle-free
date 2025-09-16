@@ -1,8 +1,6 @@
 # sintax=docker/dockerfile:1
 FROM oraclelinux:8-slim AS builder
 
-ARG BUILD_MODE BUILD_VERSION ARCH RPM_ARCH
-
 RUN <<EOT
   # database dependencies
   microdnf -y install \
@@ -61,6 +59,7 @@ ENV PATH=${PATH}:/opt/oracle/product/23ai/dbhomeFree/bin:/opt/oracle
 COPY configureDatabase.sh /install/
 RUN /install/configureDatabase.sh
 
+ARG BUILD_MODE BUILD_VERSION ARCH RPM_ARCH
 COPY install.${BUILD_VERSION}.sh container-entrypoint.sh resetPassword createAppUser createDatabase healthcheck.sh /install/
 RUN /install/install.${BUILD_VERSION}.sh "${BUILD_MODE}"
 
