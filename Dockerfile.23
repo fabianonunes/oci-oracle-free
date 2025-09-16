@@ -29,8 +29,8 @@ ENV OCI_IMAGE_VERSION=${BUILD_VERSION} \
     ORACLE_BASE_HOME=/opt/oracle/product/23${DB_FLAVOR}/dbhomeFree \
     ORACLE_HOME=/opt/oracle/product/23${DB_FLAVOR}/dbhomeFree \
     ORACLE_SID=FREE \
-    PATH=${PATH}:/opt/oracle/product/23${DB_FLAVOR}/dbhomeFree/bin:/opt/oracle \
-    NLS_LANG=.AL32UTF8
+    PATH=${PATH}:/opt/oracle/product/23${DB_FLAVOR}/dbhomeFree/bin:/opt/oracle
+    # NLS_LANG=.AL16UTF16
 
 COPY oracle-database-free-23${DB_FLAVOR}-${BUILD_VERSION}-1.0-1.el8.${RPM_ARCH}.rpm install.${BUILD_VERSION}.sh container-entrypoint.sh resetPassword createAppUser createDatabase healthcheck.sh /install/
 
@@ -50,8 +50,8 @@ ENV ORACLE_BASE=/opt/oracle \
     ORACLE_BASE_HOME=/opt/oracle/product/23${DB_FLAVOR}/dbhomeFree \
     ORACLE_HOME=/opt/oracle/product/23${DB_FLAVOR}/dbhomeFree \
     ORACLE_SID=FREE \
-    PATH=${PATH}:/opt/oracle/product/23${DB_FLAVOR}/dbhomeFree/bin:/opt/oracle \
-    NLS_LANG=.AL32UTF8
+    PATH=${PATH}:/opt/oracle/product/23${DB_FLAVOR}/dbhomeFree/bin:/opt/oracle
+    # NLS_LANG=.AL16UTF16
 
 COPY --from=builder / /
 RUN rm -rf "${ORACLE_BASE}"

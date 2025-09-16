@@ -206,7 +206,7 @@ export ORACLE_SID=FREE
 export PATH=\${PATH}:\${ORACLE_HOME}/bin:\${ORACLE_BASE}
 
 # Use UTF-8 by default
-export NLS_LANG=.AL32UTF8
+# export NLS_LANG=.AL32UTF8
 " >> "${ORACLE_BASE}"/.bash_profile
 chown oracle:oinstall "${ORACLE_BASE}"/.bash_profile
 
