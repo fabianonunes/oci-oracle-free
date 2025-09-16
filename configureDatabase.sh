@@ -5,7 +5,7 @@ set -Eeuo pipefail
 ###### Configure Database ########
 ##################################
 
-# Set 'oracle' user home directory to ${ORACE_BASE}
+# Set 'oracle' user home directory to ${ORACLE_BASE}
 usermod -d "${ORACLE_BASE}" oracle
 
 # Set 'oracle' user password to 'oracle'
