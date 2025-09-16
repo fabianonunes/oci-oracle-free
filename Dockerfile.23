@@ -68,13 +68,13 @@ RUN /install/install.${BUILD_VERSION}.sh "${BUILD_MODE}"
 FROM scratch AS os_layer
 
 # Redefine environment variables, etc. as we copied everything from an empty image (scratch)
-ENV ORACLE_BASE=/opt/oracle \
-    ORACLE_BASE_CONFIG=/opt/oracle/product/23ai/dbhomeFree \
-    ORACLE_BASE_HOME=/opt/oracle/product/23ai/dbhomeFree \
-    ORACLE_HOME=/opt/oracle/product/23ai/dbhomeFree \
-    ORACLE_SID=FREE \
-    PATH=${PATH}:/opt/oracle/product/23ai/dbhomeFree/bin:/opt/oracle
-    # NLS_LANG=.AL16UTF16
+ENV ORACLE_BASE=/opt/oracle
+ENV ORACLE_HOME=/opt/oracle/product/23ai/dbhomeFree
+ENV ORACLE_BASE_CONFIG=/opt/oracle/product/23ai/dbhomeFree
+ENV ORACLE_BASE_HOME=/opt/oracle/product/23ai/dbhomeFree
+ENV ORACLE_SID=FREE
+ENV PATH=${PATH}:/opt/oracle/product/23ai/dbhomeFree/bin:/opt/oracle
+# ENV NLS_LANG=.AL16UTF16
 
 COPY --from=builder / /
 
