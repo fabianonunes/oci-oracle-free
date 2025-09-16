@@ -1,7 +1,7 @@
 # sintax=docker/dockerfile:1
 FROM oraclelinux:8-slim AS builder
 
-ARG BUILD_MODE BUILD_VERSION DB_FLAVOR ARCH RPM_ARCH
+ARG BUILD_MODE BUILD_VERSION ARCH RPM_ARCH
 
 RUN <<EOT
   # database dependencies
@@ -51,16 +51,16 @@ RUN --mount=source=oracle-database-free-23ai-23.9-1.el8.x86_64.rpm,target=oracle
 EOT
 
 ENV ORACLE_BASE=/opt/oracle
-ENV ORACLE_HOME=/opt/oracle/product/23${DB_FLAVOR}/dbhomeFree
+ENV ORACLE_HOME=/opt/oracle/product/23ai/dbhomeFree
 COPY configureDatabase.sh /install/
 RUN /install/configureDatabase.sh
 
 ENV OCI_IMAGE_VERSION=${BUILD_VERSION}
 ENV OCI_IMAGE_FLAVOR=${BUILD_MODE}
-ENV ORACLE_BASE_CONFIG=/opt/oracle/product/23${DB_FLAVOR}/dbhomeFree
-ENV ORACLE_BASE_HOME=/opt/oracle/product/23${DB_FLAVOR}/dbhomeFree
+ENV ORACLE_BASE_CONFIG=/opt/oracle/product/23ai/dbhomeFree
+ENV ORACLE_BASE_HOME=/opt/oracle/product/23ai/dbhomeFree
 ENV ORACLE_SID=FREE
-ENV PATH=${PATH}:/opt/oracle/product/23${DB_FLAVOR}/dbhomeFree/bin:/opt/oracle
+ENV PATH=${PATH}:/opt/oracle/product/23ai/dbhomeFree/bin:/opt/oracle
 # ENV NLS_LANG=.AL16UTF16
 COPY install.${BUILD_VERSION}.sh container-entrypoint.sh resetPassword createAppUser createDatabase healthcheck.sh /install/
 RUN /install/install.${BUILD_VERSION}.sh "${BUILD_MODE}"
@@ -68,15 +68,13 @@ RUN /install/install.${BUILD_VERSION}.sh "${BUILD_MODE}"
 ##########################################################################################
 FROM scratch AS os_layer
 
-ARG DB_FLAVOR
-
 # Redefine environment variables, etc. as we copied everything from an empty image (scratch)
 ENV ORACLE_BASE=/opt/oracle \
-    ORACLE_BASE_CONFIG=/opt/oracle/product/23${DB_FLAVOR}/dbhomeFree \
-    ORACLE_BASE_HOME=/opt/oracle/product/23${DB_FLAVOR}/dbhomeFree \
-    ORACLE_HOME=/opt/oracle/product/23${DB_FLAVOR}/dbhomeFree \
+    ORACLE_BASE_CONFIG=/opt/oracle/product/23ai/dbhomeFree \
+    ORACLE_BASE_HOME=/opt/oracle/product/23ai/dbhomeFree \
+    ORACLE_HOME=/opt/oracle/product/23ai/dbhomeFree \
     ORACLE_SID=FREE \
-    PATH=${PATH}:/opt/oracle/product/23${DB_FLAVOR}/dbhomeFree/bin:/opt/oracle
+    PATH=${PATH}:/opt/oracle/product/23ai/dbhomeFree/bin:/opt/oracle
     # NLS_LANG=.AL16UTF16
 
 COPY --from=builder / /

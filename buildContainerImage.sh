@@ -27,7 +27,6 @@ VERSION="23.8"
 IMAGE_FLAVOR="REGULAR"
 IMAGE_NAME="gvenzl/oracle-free"
 BASE_IMAGE=""
-DB_FLAVOR="ai"
 BUILDER_ARCH=$(uname -m)
 
 function usage() {
@@ -62,10 +61,6 @@ while getopts "hfrsv:o:" optname; do
       ;;
     "v")
       VERSION="${OPTARG}"
-      # 23.2 and 23.3 are called 23c not 23ai
-      if [[ ("${VERSION}" == "23.2") || ("${VERSION}" == "23.3") ]]; then
-        DB_FLAVOR="c"
-      fi;
       ;;
     "f")
       IMAGE_FLAVOR="FULL"
@@ -125,7 +120,6 @@ docker build \
   --build-arg BUILD_MODE="${IMAGE_FLAVOR}" \
   --build-arg BASE_IMAGE="${BASE_IMAGE}" \
   --build-arg BUILD_VERSION="${VERSION}" \
-  --build-arg DB_FLAVOR="${DB_FLAVOR}" \
   --build-arg ARCH="${ARCH}" \
   --build-arg RPM_ARCH="${RPM_ARCH}" \
   --progress=plain .
