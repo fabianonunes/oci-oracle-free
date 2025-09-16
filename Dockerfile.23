@@ -22,16 +22,6 @@ FROM oraclelinux:8-slim AS builder
 
 ARG BUILD_MODE BUILD_VERSION DB_FLAVOR ARCH RPM_ARCH
 
-ENV OCI_IMAGE_VERSION=${BUILD_VERSION} \
-    OCI_IMAGE_FLAVOR=${BUILD_MODE} \
-    ORACLE_BASE=/opt/oracle \
-    ORACLE_BASE_CONFIG=/opt/oracle/product/23${DB_FLAVOR}/dbhomeFree \
-    ORACLE_BASE_HOME=/opt/oracle/product/23${DB_FLAVOR}/dbhomeFree \
-    ORACLE_HOME=/opt/oracle/product/23${DB_FLAVOR}/dbhomeFree \
-    ORACLE_SID=FREE \
-    PATH=${PATH}:/opt/oracle/product/23${DB_FLAVOR}/dbhomeFree/bin:/opt/oracle
-    # NLS_LANG=.AL16UTF16
-
 RUN <<EOT
   # database dependencies
   microdnf -y install \
@@ -79,9 +69,18 @@ RUN --mount=source=oracle-database-free-23ai-23.9-1.el8.x86_64.rpm,target=oracle
   rpm -iv --nodeps oracle.rpm
 EOT
 
+ENV ORACLE_BASE=/opt/oracle
+ENV ORACLE_HOME=/opt/oracle/product/23${DB_FLAVOR}/dbhomeFree
 COPY configureDatabase.sh /install/
 RUN /install/configureDatabase.sh
 
+ENV OCI_IMAGE_VERSION=${BUILD_VERSION}
+ENV OCI_IMAGE_FLAVOR=${BUILD_MODE}
+ENV ORACLE_BASE_CONFIG=/opt/oracle/product/23${DB_FLAVOR}/dbhomeFree
+ENV ORACLE_BASE_HOME=/opt/oracle/product/23${DB_FLAVOR}/dbhomeFree
+ENV ORACLE_SID=FREE
+ENV PATH=${PATH}:/opt/oracle/product/23${DB_FLAVOR}/dbhomeFree/bin:/opt/oracle
+# ENV NLS_LANG=.AL16UTF16
 COPY install.${BUILD_VERSION}.sh container-entrypoint.sh resetPassword createAppUser createDatabase healthcheck.sh /install/
 RUN /install/install.${BUILD_VERSION}.sh "${BUILD_MODE}"
 
