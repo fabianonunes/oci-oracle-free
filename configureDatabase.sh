@@ -25,7 +25,10 @@ echo "BUILDER: configuring database"
 # Set random password
 ORACLE_PASSWORD=$(date '+%s' | sha256sum | base64 | head -c 8)
 # Configure the Oracle Database instance
-(echo "${ORACLE_PASSWORD}"; echo "${ORACLE_PASSWORD}";) | /etc/init.d/oracle-free-23* configure
+/etc/init.d/oracle-free-23* configure <<EOF
+${ORACLE_PASSWORD}
+${ORACLE_PASSWORD}
+EOF
 
 # Stop unconfigured listener
 su -p oracle -c "lsnrctl stop"
