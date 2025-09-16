@@ -27,7 +27,6 @@ VERSION="23.8"
 IMAGE_FLAVOR="REGULAR"
 IMAGE_NAME="gvenzl/oracle-free"
 SKIP_CHECKSUM="false"
-FASTSTART="false"
 BASE_IMAGE=""
 DB_FLAVOR="ai"
 BUILDER_ARCH=$(uname -m)
@@ -42,7 +41,6 @@ Parameters:
    -f: creates a 'full' image
    -r: creates a regular image (default)
    -s: creates a 'slim' image
-   -x: creates a 'faststart' image
    -v: version of Oracle Database Free to build
        Choose one of: 23.8, 23.7, 23.6, 23.5, 23.4, 23.3, 23.2
    -i: ignores checksum test
@@ -85,9 +83,6 @@ while getopts "hfrsv:io:x" optname; do
       ;;
     "o")
       eval "BUILD_OPTS=(${OPTARG})"
-      ;;
-    "x")
-      FASTSTART="true"
       ;;
     "?")
       usage;
@@ -151,14 +146,7 @@ else
   RPM_ARCH="aarch64"
 fi;
 
-# Add faststart tag to image and set Dockerfile
-if [ "${FASTSTART}" == "true" ]; then
-  BASE_IMAGE="${IMAGE_NAME}-${ARCH}"
-  IMAGE_NAME="${IMAGE_NAME}-faststart-${ARCH}"
-  DOCKER_FILE="Dockerfile.faststart"
-else
-  IMAGE_NAME="${IMAGE_NAME}-${ARCH}"
-fi;
+IMAGE_NAME="${IMAGE_NAME}-${ARCH}"
 
 echo "BUILDER: building image $IMAGE_NAME"
 
