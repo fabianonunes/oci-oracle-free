@@ -143,11 +143,6 @@ chown oracle:oinstall /container-entrypoint*
 mkdir /pdb-plug
 chown oracle:oinstall /pdb-plug
 
-# Store image information
-echo "BUILDER: storing image information"
-echo "${OCI_IMAGE_VERSION}" > /etc/oci-image-version
-echo "${OCI_IMAGE_FLAVOR}"  > /etc/oci-image-flavor
-
 # Perform further Database setup operations
 echo "BUILDER: changing database configuration and parameters for all images"
 su -p oracle -c "sqlplus -s / as sysdba" << EOF

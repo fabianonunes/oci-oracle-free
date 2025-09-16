@@ -61,9 +61,6 @@ ENV PATH=${PATH}:/opt/oracle/product/23ai/dbhomeFree/bin:/opt/oracle
 COPY configureDatabase.sh /install/
 RUN /install/configureDatabase.sh
 
-ENV OCI_IMAGE_VERSION=${BUILD_VERSION}
-ENV OCI_IMAGE_FLAVOR=${BUILD_MODE}
-
 COPY install.${BUILD_VERSION}.sh container-entrypoint.sh resetPassword createAppUser createDatabase healthcheck.sh /install/
 RUN /install/install.${BUILD_VERSION}.sh "${BUILD_MODE}"
 
