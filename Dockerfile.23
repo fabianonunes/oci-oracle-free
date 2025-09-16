@@ -88,9 +88,6 @@ COPY install.${BUILD_VERSION}.sh container-entrypoint.sh resetPassword createApp
 RUN /install/install.${BUILD_VERSION}.sh "${BUILD_MODE}"
 
 ##########################################################################################
-### Layer 1 --> Core OS
-##########################################################################################
-
 FROM scratch AS os_layer
 
 ARG DB_FLAVOR
@@ -105,57 +102,6 @@ ENV ORACLE_BASE=/opt/oracle \
     # NLS_LANG=.AL16UTF16
 
 COPY --from=builder / /
-RUN rm -rf "${ORACLE_BASE}"
-
-##########################################################################################
-### Layer 2 --> Oracle Home without bin/oracle, lib, rdbms, and FREE.tar.zst
-##########################################################################################
-
-FROM os_layer AS oracle_home
-
-COPY --from=builder --chown=oracle:oinstall "${ORACLE_BASE}" "${ORACLE_BASE}"
-
-RUN rm    "${ORACLE_HOME}"/bin/oracle
-RUN rm -r "${ORACLE_HOME}"/lib
-RUN rm -r "${ORACLE_HOME}"/rdbms
-RUN rm    "${ORACLE_BASE}"/"${ORACLE_SID}".tar.zst
-
-
-##########################################################################################
-### Layer 3 --> Oracle binary (bin/oracle)
-##########################################################################################
-
-FROM oracle_home AS oracle_binary
-
-COPY --from=builder --chown=oracle:oinstall "${ORACLE_HOME}"/bin/oracle "${ORACLE_HOME}"/bin/oracle
-
-##########################################################################################
-### Layer 4 --> Oracle lib
-##########################################################################################
-
-FROM oracle_binary AS oracle_lib
-
-COPY --from=builder --chown=oracle:oinstall "${ORACLE_HOME}"/lib "${ORACLE_HOME}"/lib
-
-##########################################################################################
-### Layer 5 --> Oracle lib
-##########################################################################################
-
-FROM oracle_lib AS oracle_rdbms
-
-COPY --from=builder --chown=oracle:oinstall "${ORACLE_HOME}"/rdbms "${ORACLE_HOME}"/rdbms
-
-##########################################################################################
-### Layer 6 --> Oracle (compressed) db files
-##########################################################################################
-
-FROM oracle_rdbms AS db_files
-
-COPY --from=builder --chown=oracle:oinstall "${ORACLE_BASE}"/"${ORACLE_SID}".tar.zst  "${ORACLE_BASE}"/
-
-##########################################################################################
-### Finalize (reset permissions for root owned files, set label, user, etc.)
-##########################################################################################
 
 RUN chown root "${ORACLE_HOME}"/bin/extjob; \
     chmod 4750 "${ORACLE_HOME}"/bin/extjob; \
