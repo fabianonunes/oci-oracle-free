@@ -74,11 +74,9 @@ RUN <<EOT
   ;
 EOT
 
-RUN <<EOT
-  package=oracle-database-free-23ai-23.8-1.el8.x86_64.rpm
-  curl -sLO https://download.oracle.com/otn-pub/otn_software/db-free/"$package"
-  rpm -iv --nodeps "$package"
-  rm "$package"
+# https://download.oracle.com/otn-pub/otn_software/db-free/oracle-database-free-23ai-23.8-1.el8.x86_64.rpm
+RUN --mount=source=oracle-database-free-23ai-23.9-1.el8.x86_64.rpm,target=oracle.rpm <<EOT
+  rpm -iv --nodeps oracle.rpm
 EOT
 
 COPY configureDatabase.sh /install/
