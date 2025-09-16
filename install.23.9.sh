@@ -31,8 +31,8 @@ BUILD_MODE=${1:-"REGULAR"}
 echo "BUILDER: BUILD_MODE=${BUILD_MODE}"
 
 # Set data file sizes (only executed for REGULAR and SLIM)
-USERS_SIZE=64
-TEMP_SIZE=64
+USERS_SIZE=128
+TEMP_SIZE=128
 # Overwrite REGULAR with SLIM sizes
 if [ "${BUILD_MODE}" == "SLIM" ]; then
   REDO_SIZE=10
