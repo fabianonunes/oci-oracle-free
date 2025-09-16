@@ -32,8 +32,6 @@ ENV OCI_IMAGE_VERSION=${BUILD_VERSION} \
     PATH=${PATH}:/opt/oracle/product/23${DB_FLAVOR}/dbhomeFree/bin:/opt/oracle
     # NLS_LANG=.AL16UTF16
 
-COPY oracle-database-free-23${DB_FLAVOR}-${BUILD_VERSION}-1.el8.${RPM_ARCH}.rpm container-entrypoint.sh resetPassword createAppUser createDatabase healthcheck.sh configureDatabase.sh /install/
-
 RUN <<EOT
   # database dependencies
   microdnf -y install \
@@ -76,10 +74,17 @@ RUN <<EOT
   ;
 EOT
 
-RUN rpm -iv --nodeps /install/oracle-database-free-23*.rpm
+RUN <<EOT
+  package=oracle-database-free-23ai-23.8-1.el8.x86_64.rpm
+  curl -sLO https://download.oracle.com/otn-pub/otn_software/db-free/"$package"
+  rpm -iv --nodeps "$package"
+  rm "$package"
+EOT
+
+COPY configureDatabase.sh /install/
 RUN /install/configureDatabase.sh
 
-COPY install.${BUILD_VERSION}.sh /install/
+COPY install.${BUILD_VERSION}.sh container-entrypoint.sh resetPassword createAppUser createDatabase healthcheck.sh /install/
 RUN /install/install.${BUILD_VERSION}.sh "${BUILD_MODE}"
 
 ##########################################################################################
